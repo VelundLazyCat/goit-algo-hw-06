@@ -1,12 +1,11 @@
 from collections import UserDict
 
-
 class Field:
     def __init__(self, value):
         self.value = value
 
     def __repr__(self):
-        return str(self.value)
+        return self.value
 
 
 class Name(Field):
@@ -44,15 +43,11 @@ class Record:
 
     def edit_phone(self, phone_number, phone_number_new):
         for phone in self.phones:
-            if phone_number == phone.value:
-                phone.value = Phone(phone_number_new)
+            if phone.value == phone_number:
+                self.remove_phone(phone_number)
+                self.add_phone(phone_number_new)
                 return phone_number, phone_number_new
         raise ValueError
-
-    # альтернатива
-    # def edit_phone(self, phone_number, phone_number_new):
-    #     self.remove_phone(phone_number)
-    #     self.add_phone(phone_number_new)
 
     def find_phone(self, phone_number):
         for phone in self.phones:
@@ -61,7 +56,8 @@ class Record:
                 return phone
 
     def __str__(self):
-        return f"Contact name: {self.name}, phones: {'; '.join(p.value for p in self.phones)}"
+        phones = '; '.join(p.value for p in self.phones)
+        return f"Contact name: {self.name}, phones: {phones}"
 
 
 class AddressBook(UserDict):
@@ -78,6 +74,13 @@ class AddressBook(UserDict):
         # if name in self.data:
         #     del self.data[name]
 
+    def __str__(self) -> str:
+        records = 'Book records:\n'
+        for n, k in self.data.items():
+            records += f"Contact name: {n}, phones: {
+                '; '.join(p.value for p in k.phones)}\n"
+        return records
+
 
 if __name__ == '__main__':
 
@@ -86,7 +89,7 @@ if __name__ == '__main__':
     book = AddressBook()
     john_record = Record("John")
     john_record.add_phone("1234567890")
-    john_record.add_phone("17234567890")
+    # john_record.add_phone("17234567890")
     john_record.add_phone("5555555555")
     print(john_record.name)
     print(john_record.phones)
@@ -116,4 +119,5 @@ if __name__ == '__main__':
     print(f"{john.name}: <{found_phone}>")  # Виведення: 5555555555
 
     # Видалення запису Jane
-    book.delete("Jane")
+    # book.delete("Jane")
+    print(book)
